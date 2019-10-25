@@ -1,5 +1,5 @@
-const localReg = /(localhost|192\.168)/ 
+const localDevReg = /(localhost|192\.168)/
 export default {
-    baseUrl: localReg.test(location.origin) ? '' : '',
+    baseUrl: localDevReg.test(location.origin) ? '' : '',
     socketUrl: ''
 }

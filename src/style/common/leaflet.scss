@@ -343,17 +343,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	background: #fff;
 	border-radius: 5px;
 }
-.leaflet-control-layers-toggle {
-	background-image: url(./assets/images/leaflet/layers.png);
-	width: 36px;
-	height: 36px;
-}
 .leaflet-bottom.leaflet-right{
     display: none;
-}
-.leaflet-retina .leaflet-control-layers-toggle {
-	background-image: url(./assets/images/leaflet/layers-2x.png);
-	background-size: 26px 26px;
 }
 .leaflet-touch .leaflet-control-layers-toggle {
 	width: 44px;
@@ -390,13 +381,6 @@ svg.leaflet-image-layer.leaflet-interactive path {
 	border-top: 1px solid #ddd;
 	margin: 5px -10px 5px -6px;
 }
-
-/* Default icon URLs */
-.leaflet-default-icon-path {
-	background-image: url(./assets/images/leaflet/marker-icon.png);
-}
-
-
 /* attribution and scale controls */
 
 .leaflet-container .leaflet-control-attribution {
@@ -537,7 +521,6 @@ svg.leaflet-image-layer.leaflet-interactive path {
 .leaflet-oldie .leaflet-popup-tip {
 	width: 24px;
 	margin: 0 auto;
-
 	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
     filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
 }

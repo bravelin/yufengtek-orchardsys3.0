@@ -6,8 +6,6 @@ module.exports = {
         port: 9001,
         https: false,
         hotOnly: false,
-        disableHostCheck: true,
-        proxy: {
-        }
+        disableHostCheck: true
     }
 }

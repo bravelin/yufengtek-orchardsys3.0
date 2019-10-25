@@ -1,0 +1,226 @@
+.login-page{
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    bottom: 0;
+    right: 0;
+    margin-left: 0;
+    margin-right: 0;
+    
+    .login-dialog{
+        position: relative;
+        border: 2px solid #108387;
+        background: rgba(#063536, 0.85);
+        padding: 15px;
+        border-radius: 4px;
+        width: 500px;
+        left: 3%;
+        background-clip: content-box;
+        z-index: 2;
+        &::before{
+            content: "";
+            position: absolute;
+            left: -2px;
+            bottom: -2px;
+            width: 15px;
+            height: 15px;
+            border-bottom: 2px solid #1ce4eb;
+            border-left: 2px solid #1ce4eb;
+            border-bottom-left-radius: 4px;
+        }
+        &::after{
+            content: "";
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 15px;
+            height: 15px;
+            border-bottom: 2px solid #1ce4eb;
+            border-right: 2px solid #1ce4eb;
+            border-bottom-right-radius: 4px;
+        }
+        >h3{
+            position: relative;
+            text-align: center;
+            font-size: 30px;
+            letter-spacing: 3px;
+            line-height: 2.8;
+            font-weight: bold;
+            padding-top: 12px;
+            &::before{
+                content: "";
+                position: absolute;
+                left: -17px;
+                top: -17px;
+                width: 15px;
+                height: 15px;
+                border-top: 2px solid #1ce4eb;
+                border-left: 2px solid #1ce4eb;
+                border-top-left-radius: 4px;
+            }
+            &::after{
+                content: "";
+                position: absolute;
+                right: -17px;
+                top: -17px;
+                width: 15px;
+                height: 15px;
+                border-top: 2px solid #1ce4eb;
+                border-right: 2px solid #1ce4eb;
+                border-top-right-radius: 4px;
+            }
+        }
+        >div{
+            margin-left: 25px;
+            margin-right: 25px;
+        }
+    }
+    .form-item{
+        position: relative;
+        border-bottom: 1px solid rgba(#fff, 0.85);
+        margin-bottom: 16px;
+        padding: 10px 0;
+        height: 35px;
+        &:after{
+            content: '';
+            position: absolute;
+            display: block;
+            left: 0;
+            bottom: -1px;
+            width: 0;
+            height: 2px;
+            background-color: #1ce4eb;
+            transition: width 0.4s ease-out;
+            will-change: width;
+        }
+        label{
+            position: absolute;
+            top: 26px;
+            left: 0;
+            font-size: 15px;
+            transition: top 0.4s ease-out;
+            will-change: top;
+            letter-spacing: 2px;
+        }
+        input{
+            position: absolute;
+            left: 0;
+            width: 100%;
+            bottom: 2px;
+            height: 35px;
+            box-sizing: border-box;
+            color: #fff;
+            font-size: 16px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #1ce4eb;
+        }
+        img{
+            position: absolute;
+            display: block;
+            right: 0;
+            bottom: 3px;
+            background: #303c6e;
+            width: 100px;
+            height: 42px;
+            border: none;
+            outline: none;
+        }
+        &.active{
+            &::after{
+                width: 100%;
+            }
+        }
+        &.top{
+            label{
+                top: 0;
+                font-size: 12px;
+            }
+        }
+    }
+    div.remember-account{
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 26px;
+        letter-spacing: 1px;
+        color: rgba(#fff, 0.8);
+        cursor: pointer;
+        transition: color 0.35s ease-out;
+        margin-bottom: 20px;
+        &::before{
+            content: "";
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 1px;
+            border: 1px solid rgba(#fff, 0.85);
+            margin-right: 8px;
+            margin-top: 2px;
+        }
+        &:hover{
+            color: #fff;
+        }
+        &::after{
+            display: none;
+            content: "\2714";
+            position: absolute;
+            top: 0;
+            left: 0;
+            text-align: center;
+            font-size: 1.15em;
+            padding: 2px 0 0 1px;
+        }
+        &.active::after{
+            display: block;
+        }
+    }
+    div.login-button{
+        position: relative;
+        text-align: center;
+        font-size: 18px;
+        line-height: 2.5;
+        letter-spacing: 10px;
+        margin-bottom: 30px;
+        border: 1px solid #fff;
+        border-radius: 30px;
+        cursor: pointer;
+        overflow: hidden;
+        z-index: 0;
+        &::before{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.1);
+            z-index: -1;
+            transform-origin: center center;
+            transition: transform 0.45s ease-out, background-color 0.35s ease;
+            will-change: transform, background-color;
+            transform: scale(0,1);
+        }
+        &:hover{
+            &::before{
+                transform: scale(1,1);
+                background-color: rgba(255,255,255,0.4);
+            }
+        }
+    }
+
+    .sphere{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+}

@@ -31,9 +31,16 @@
 }
 
 .loading-wrap {
-    position: relative;
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    z-index: 999;
+    background: rgba(0,0,0,0.65);
 }
 
 .loading-eclipse div {
@@ -45,7 +52,7 @@
     top: 25px;
     left: 25px;
     border-radius: 50%;
-    box-shadow: 0 4px 0 0 #1484ff;
+    box-shadow: 0 4px 0 0 #1ce4eb;
     -webkit-transform-origin: 90px 92px;
     transform-origin: 90px 92px;
 }

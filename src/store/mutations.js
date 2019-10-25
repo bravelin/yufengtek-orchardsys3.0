@@ -1,5 +1,5 @@
 import types from '@/store/constants/types'
-import StorageTags from '@/lib/storageTags'
+import tags from '@/lib/tags'
 const win = window
 const doc = document
 const ls = localStorage
@@ -47,19 +47,19 @@ export default {
         state.userName = payload.userName
         state.userRole = payload.userRole
         state.loginRemember = payload.loginRemember
-        ls.setItem(StorageTags.loginRemember, payload.loginRemember ? '1' : '0')
+        ls.setItem(tags.loginRemember, payload.loginRemember ? '1' : '0')
         if (payload.loginRemember) { // 记住用户信息
-            ls.setItem(StorageTags.userToken, state.userToken)
-            ls.setItem(StorageTags.userId, state.userId)
-            ls.setItem(StorageTags.userName, state.userName)
-            ls.setItem(StorageTags.userRole, state.userRole)
-            ls.setItem(StorageTags.password, payload.password)
+            ls.setItem(tags.userToken, state.userToken)
+            ls.setItem(tags.userId, state.userId)
+            ls.setItem(tags.userName, state.userName)
+            ls.setItem(tags.userRole, state.userRole)
+            ls.setItem(tags.password, payload.password)
         } else {
-            ls.removeItem(StorageTags.userToken)
-            ls.removeItem(StorageTags.userId)
-            ls.removeItem(StorageTags.userName)
-            ls.removeItem(StorageTags.userRole)
-            ls.removeItem(StorageTags.password)
+            ls.removeItem(tags.userToken)
+            ls.removeItem(tags.userId)
+            ls.removeItem(tags.userName)
+            ls.removeItem(tags.userRole)
+            ls.removeItem(tags.password)
         }
     },
     // 清除用户信息
@@ -67,13 +67,13 @@ export default {
         state.userToken = ''
         state.userId = ''
         state.userRole = ''
-        ls.removeItem(StorageTags.userToken)
-        ls.removeItem(StorageTags.userId)
-        ls.removeItem(StorageTags.userRole)
-        if (ls.getItem(StorageTags.loginRemember) == '0') {
+        ls.removeItem(tags.userToken)
+        ls.removeItem(tags.userId)
+        ls.removeItem(tags.userRole)
+        if (ls.getItem(tags.loginRemember) == '0') {
             state.userName = ''
-            ls.removeItem(StorageTags.userName)
-            ls.removeItem(StorageTags.password)
+            ls.removeItem(tags.userName)
+            ls.removeItem(tags.password)
         }
     },
     // 控制NoResult提示的显示
