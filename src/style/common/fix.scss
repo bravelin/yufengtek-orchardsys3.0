@@ -1,0 +1,75 @@
+/* video.js style */
+.video-js .vjs-big-play-button{
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%);
+}
+.vjs-tech {
+    pointer-events: none;
+}
+.vjs-error .vjs-error-display:before{
+    content: '暂无法播放...' !important;
+    font-size: 18px !important;
+    letter-spacing: 5px;
+}
+.vjs-error .vjs-error-display .vjs-modal-dialog-content{
+    display: none;
+}
+.vjs-live-control{
+    display: none !important;
+}
+.vjs-progress-holder{
+    display: none !important;
+}
+.video-js.vjs-fullscreen{
+    >video{
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+.vjs-fullscreen-control{
+    position: absolute !important;
+    right: 0;
+    top: 0;
+}
+
+/* element ui style */
+.el-picker-panel{
+    background: rgba(#102d56, 1) !important;
+    transform: translate(-29px, -10px) !important;
+    .popper__arrow{
+        transform: translateX(30px);
+    }
+}
+.el-popper[x-placement^=bottom] .popper__arrow::after{
+    display: none !important;
+}
+.el-date-picker__header-label{
+    color: #eee !important;
+}
+.el-date-picker__header{
+    margin-top: 6px !important;
+    margin-bottom: 0px !important;
+}
+.el-picker-panel__content{
+    margin-top: 0px !important;
+}
+.el-picker-panel__icon-btn{
+    color: #aaa !important;
+    &:hover{
+        color: #fff !important;
+    }
+}
+.el-date-table td.available span{
+    color: #fff
+}
+.el-date-table td.next-month, .el-date-table td.prev-month{
+    color: #666 !important;
+}
+.el-picker-panel__content .el-date-table>tbody>tr>th{
+    color: #aaa;
+}
+.el-date-table td.disabled div{
+    background: rgba(#102d56, 1) !important;
+    color: #666 !important;
+}
