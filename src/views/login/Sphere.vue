@@ -27,6 +27,9 @@
 
     const tracks = [] // 轨道对象
     const starGroups = [] // 沿着轨道的白色星星
+    const cameraNormalZ = 480
+    const cameraNormalX = -140
+    let isStartToSwitchHomePage = false
     export default {
         name: 'LoginSphere',
         mounted () {
@@ -64,10 +67,16 @@
                 const winHeight = document.documentElement.clientHeight || window.innerHeight
                 scene = new THREE.Scene()
                 camera = new THREE.PerspectiveCamera(45, winWidth / winHeight, 0.1, 10000)
-                camera.position.z = 550
+                camera.position.z = 900
+                camera.position.x = -380
                 renderer = new THREE.WebGLRenderer({ antialias: true })
                 renderer.setSize(winWidth, winHeight)
                 renderer.autoClearColor = new THREE.Color(1, 0, 0, 0)
+                const pointLight = new THREE.PointLight(0xffffff)
+                pointLight.position.x = 10
+                pointLight.position.y = 50
+                pointLight.position.z = 150
+                scene.add(pointLight)
                 that.$el.appendChild(renderer.domElement)
             },
             createObjects () {
@@ -78,9 +87,10 @@
             // 轨道虚线
             createTracks () {
                 const trackDatas = [
-                    { color: 0x006a6f, dashSize: 1, gapSize: 3, xRadius: 140, yRadius: 50, rotate: -PI * 0.1 },
-                    { color: 0x005e68, dashSize: 1.2, gapSize: 3, xRadius: 155, yRadius: 60, rotate: -PI * 0.15 },
-                    { color: 0x005d66, dashSize: 1, gapSize: 3, xRadius: 165, yRadius: 70, rotate: -PI * 0.22 }
+                    { color: 0x005e68, dashSize: 1, gapSize: 3, xRadius: 155, yRadius: 50, rotate: -PI * 0.15 },
+                    { color: 0x005e68, dashSize: 1, gapSize: 3, xRadius: 155, yRadius: 50, rotate: PI * 0.15 },
+                    { color: 0x005d66, dashSize: 1, gapSize: 3, xRadius: 165, yRadius: 70, rotate: -PI * 0.32 },
+                    { color: 0x005d66, dashSize: 1, gapSize: 3, xRadius: 165, yRadius: 70, rotate: PI * 0.32 }
                 ]
                 let material = null
                 let ellipse = null
@@ -99,14 +109,14 @@
                     tracks.push(line)
                 })
             },
-            // 小行星
+            // 创建小行星
             createPlanets () {
                 const that = this
                 const stars = [
-                    { dashSize: 20, gapSize: 150, xRadius: 145, yRadius: 55, rotate: PI * 0.1 },
-                    { dashSize: 10, gapSize: 160, xRadius: 158, yRadius: 65, rotate: PI * 0.25 },
-                    { dashSize: 10, gapSize: 170, xRadius: 168, yRadius: 75, rotate: PI * 0.5 },
-                    { dashSize: 10, gapSize: 170, xRadius: 178, yRadius: 75, rotate: 0, axis: new THREE.Vector3(0, 0, 1) }
+                    { dashSize: 20, gapSize: 150, xRadius: 175, yRadius: 175, axis: new THREE.Vector3(0, 1, 1), speed: 0.15, rotate: (PI / 180) * 30 },
+                    { dashSize: 20, gapSize: 160, xRadius: 175, yRadius: 175, axis: new THREE.Vector3(0, 1, 1), speed: 0.15, rotate: -(PI / 180) * 30 },
+                    { dashSize: 20, gapSize: 160, xRadius: 170, yRadius: 170, axis: new THREE.Vector3(0, 1, 1), speed: 0.1, rotate: (PI / 180) * 80 },
+                    { dashSize: 20, gapSize: 160, xRadius: 170, yRadius: 170, axis: new THREE.Vector3(0, 1, 1), speed: 0.1, rotate: -(PI / 180) * 80 }
                 ]
                 let vertices = null
                 let positions = null
@@ -115,67 +125,52 @@
                 let vertex = null
                 let len = 0
                 let vLen = 0
-                let color = new THREE.Color()
                 const particleSize = 30
                 let geometry = null
                 let particles = null
                 let ellipsePath = null
                 let ellipseGeometry = null
-                const material = new THREE.ShaderMaterial({
-                    uniforms: {
-                        color: { value: new THREE.Color(0xffffff) },
-                        pointTexture: { value: new THREE.TextureLoader().load(imgUrl.disc) }
-                    },
-                    vertexShader: `attribute float size;
-                                attribute vec3 customColor;
-                                varying vec3 vColor;
-                                void main() {
-                                    vColor = customColor;
-                                    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-                                    gl_PointSize = size * ( 300.0 / -mvPosition.z );
-                                    gl_Position = projectionMatrix * mvPosition; }`,
-                    fragmentShader: `uniform vec3 color;
-                                    uniform sampler2D pointTexture;
-                                    varying vec3 vColor;
-                                    void main() {
-                                        gl_FragColor = vec4( color * vColor, 1.0 );
-                                        gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-                                        if ( gl_FragColor.a < ALPHATEST ) discard; }`,
-                    alphaTest: 0.9
-                })
-                stars.forEach(({ dashSize, gapSize, xRadius, yRadius, rotate, axis }) => {
+
+                const sphereRadius = 1.2
+                const sphereSegment = 10
+                const sphereRings = 10
+                const sphereGeometry = new THREE.SphereGeometry(sphereRadius, sphereSegment, sphereRings)
+                const sphereMaterial = new THREE.MeshLambertMaterial({ color: 0xa6e9e9 })
+                let sphere = null
+                let rotWorldMatrix = null
+                let rotateAxis = null
+                stars.forEach(({ dashSize, gapSize, xRadius, yRadius, rotate, axis, speed }) => {
                     ellipsePath = new THREE.CurvePath()
-                    ellipsePath.add(new THREE.EllipseCurve(0, 0, xRadius, yRadius, 0, 2.0 * PI, false, rotate))
+                    ellipsePath.add(new THREE.EllipseCurve(0, 0, xRadius, yRadius, 0, 2.0 * PI, false))
                     ellipseGeometry = ellipsePath.createPointsGeometry(70)
                     vertices = [...ellipseGeometry.vertices]
                     vLen = vertices.length
+                    // 删除部分点，使点不密集
                     for (let i = vLen - 1; i >= 0; i--) {
-                        if (i % 2 == 0) {
+                        if (i % 4 == 0 || i % 4 == 1 || i % 4 == 2) {
                             vertices.splice(i, 1)
                         }
                     }
                     vLen = vertices.length
-                    len = vLen * 3
-                    positions = new Float32Array(len)
-                    colors = new Float32Array(len)
-                    sizes = new Float32Array(len)
+                    particles = { objs: new THREE.Object3D(), speed }
                     for (let i = 0; i < vLen; i++) {
                         vertex = vertices[i]
-                        vertex.toArray(positions, i * 3)
-                        color.setHSL(0.508, 0.1835, 0.29608 + 0.3 * (i / vLen))
-                        color.toArray(colors, i * 3)
-                        sizes[i] = particleSize * 0.5
+                        sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
+                        sphere.geometry.verticesNeedUpdate = true
+                        sphere.geometry.normalsNeedUpdate = true
+                        sphere.position.x = vertex.x
+                        sphere.position.z = vertex.y
+                        sphere.position.y = vertex.z
+                        particles.objs.add(sphere)
                     }
-                    geometry = new THREE.BufferGeometry()
-                    geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3))
-                    geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
-                    geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
-                    particles = new THREE.Points(geometry, material)
-                    if (axis) {
-                        particles._axis = axis
-                    }
-                    scene.add(particles)
-                    console.log('particles....', particles)
+                    scene.add(particles.objs)
+                    that.rotateObject3D(particles.objs, axis, rotate)
+                    // 将平面的法向量旋转，以求得旋转轴
+                    rotateAxis = new THREE.Vector3(0, 1, 0)
+                    rotWorldMatrix = new THREE.Matrix4()
+                    rotWorldMatrix.makeRotationAxis(axis.normalize(), rotate)
+                    rotateAxis.applyMatrix4(rotWorldMatrix)
+                    particles.axis = rotateAxis
                     starGroups.push(particles)
                 })
             },
@@ -326,15 +321,25 @@
             },
             animate () {
                 const that = this
-                aniRequestId = requestAnimationFrame(that.animate)
-                let rotWorldMatrix = null
-                starGroups.forEach(item => {
-                    if (item._axis) {
-                        that.rotateObject3D(item, item._axis, PI / 360)
+                if (!isStartToSwitchHomePage) {
+                    if (camera.position.z >= cameraNormalZ) {
+                        camera.position.z -= 1.4
                     }
+                    if (camera.position.x <= cameraNormalX) {
+                        camera.position.x += 0.9
+                    }
+                } else {
+                    console.log('switch to home page...')
+                }
+                aniRequestId = requestAnimationFrame(that.animate)
+                starGroups.forEach(({ objs, axis, speed }) => {
+                    that.rotateObject3D(objs, axis, (PI / 180) * speed)
                 })
-                that.rotateObject3D(earthParticles, new THREE.Vector3(0, 1, 0), PI / 320)
-                that.rotateObject3D(cloud, new THREE.Vector3(0, 1, 0), PI / 360)
+                tracks.forEach(obj => {
+                    obj.rotation.z += 0.001
+                })
+                earthParticles.rotation.y += 0.006
+                cloud.rotation.y += 0.004
                 renderer.render(scene, camera)
             },
             // 3D物体绕某个轴旋转一定度数
