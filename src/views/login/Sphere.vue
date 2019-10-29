@@ -106,7 +106,7 @@
                     { dashSize: 20, gapSize: 150, xRadius: 145, yRadius: 55, rotate: PI * 0.1 },
                     { dashSize: 10, gapSize: 160, xRadius: 158, yRadius: 65, rotate: PI * 0.25 },
                     { dashSize: 10, gapSize: 170, xRadius: 168, yRadius: 75, rotate: PI * 0.5 },
-                    { dashSize: 10, gapSize: 170, xRadius: 168, yRadius: 75, rotate: 0 }
+                    { dashSize: 10, gapSize: 170, xRadius: 178, yRadius: 75, rotate: 0, axis: new THREE.Vector3(0, 0, 1) }
                 ]
                 let vertices = null
                 let positions = null
@@ -133,19 +133,17 @@
                                     vColor = customColor;
                                     vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
                                     gl_PointSize = size * ( 300.0 / -mvPosition.z );
-                                    gl_Position = projectionMatrix * mvPosition;
-			                    }`,
+                                    gl_Position = projectionMatrix * mvPosition; }`,
                     fragmentShader: `uniform vec3 color;
                                     uniform sampler2D pointTexture;
                                     varying vec3 vColor;
                                     void main() {
                                         gl_FragColor = vec4( color * vColor, 1.0 );
                                         gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
-                                        if ( gl_FragColor.a < ALPHATEST ) discard;
-                                    }`,
+                                        if ( gl_FragColor.a < ALPHATEST ) discard; }`,
                     alphaTest: 0.9
                 })
-                stars.forEach(({ dashSize, gapSize, xRadius, yRadius, rotate }) => {
+                stars.forEach(({ dashSize, gapSize, xRadius, yRadius, rotate, axis }) => {
                     ellipsePath = new THREE.CurvePath()
                     ellipsePath.add(new THREE.EllipseCurve(0, 0, xRadius, yRadius, 0, 2.0 * PI, false, rotate))
                     ellipseGeometry = ellipsePath.createPointsGeometry(70)
@@ -157,7 +155,7 @@
                         }
                     }
                     vLen = vertices.length
-                    len =  vLen * 3
+                    len = vLen * 3
                     positions = new Float32Array(len)
                     colors = new Float32Array(len)
                     sizes = new Float32Array(len)
@@ -170,10 +168,14 @@
                     }
                     geometry = new THREE.BufferGeometry()
                     geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3))
-				    geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
+                    geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
                     geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
                     particles = new THREE.Points(geometry, material)
+                    if (axis) {
+                        particles._axis = axis
+                    }
                     scene.add(particles)
+                    console.log('particles....', particles)
                     starGroups.push(particles)
                 })
             },
@@ -184,27 +186,17 @@
                 const sizes = []
                 let mat = null
                 for (let i = 0; i < 2; i++) {
-                    positions[i] = {
-                        positions: []
-                    }
-                    sizes[i] = {
-                        sizes: []
-                    }
+                    positions[i] = { positions: [] }
+                    sizes[i] = { sizes: [] }
                     mat = new THREE.PointsMaterial()
                     mat.size = 5
                     mat.color = new THREE.Color(0x0d7b7f)
                     mat.map = dotTexture
                     mat.depthWrite = false
                     mat.transparent = true
-                    mat.opacity = 0
+                    mat.opacity = 0.8
                     mat.side = THREE.FrontSide
                     mat.blending = THREE.AdditiveBlending
-                    let n = i / 2
-                    mat._t = n * Math.PI * 2
-                    mat._speed = BLINT_SPEED
-                    mat._min = 0.2 * Math.random() + 0.5
-                    mat._delta = 0.1 * Math.random() + 0.1
-                    mat._opacity_coef = 1
                     materials.push(mat)
                 }
                 const spherical = new THREE.Spherical()
@@ -274,26 +266,12 @@
             createCloudGrid () {
                 THREE.XRayMaterial = function (options) {
                     const uniforms = {
-                        uTex: {
-                            type: 't',
-                            value: options.map || new THREE.Texture()
-                        },
-                        offsetRepeat: {
-                            value: new THREE.Vector4(0, 0, 1, 1)
-                        },
-                        alphaProportion: {
-                            type: '1f',
-                            value: options.alphaProportion || 0.5
-                        },
-                        diffuse: {
-                            value: options.color || new THREE.Color(16777215)
-                        },
-                        opacity: {
-                            value: options.opacity || 1
-                        },
-                        gridOffset: {
-                            value: 0
-                        }
+                        uTex: { type: 't', value: options.map || new THREE.Texture() },
+                        offsetRepeat: { value: new THREE.Vector4(0, 0, 1, 1) },
+                        alphaProportion: { type: '1f', value: options.alphaProportion || 0.5 },
+                        diffuse: { value: options.color || new THREE.Color(16777215) },
+                        opacity: { value: options.opacity || 1 },
+                        gridOffset: { value: 0 }
                     }
                     return new THREE.ShaderMaterial({
                             uniforms,
@@ -343,31 +321,34 @@
                 })
                 const mesh = new THREE.Mesh(geometry, material)
                 mesh.matrixAutoUpdate = !1
-                console.log('this cloud....', cloud)
                 cloud.add(mesh)
                 scene.add(cloud)
             },
             animate () {
                 const that = this
                 aniRequestId = requestAnimationFrame(that.animate)
-                const objects = earthParticles.children
-                let material = null
-                objects.forEach(obj => {
-                    material = obj.material
-                    material._t += material._speed
-                    material.opacity = (Math.sin(material._t) * material._delta + material._min) * material._opacity_coef
-                    material.needsUpdate = true
-                })
                 let rotWorldMatrix = null
-                let axis = new THREE.Vector3(0, 0, 1)
                 starGroups.forEach(item => {
-                    rotWorldMatrix = new THREE.Matrix4()
-                    rotWorldMatrix.makeRotationAxis(axis.normalize(), Math.PI / 360)
-                    rotWorldMatrix.multiply(item.matrix)
-                    item.matrix = rotWorldMatrix
-                    item.rotation.setFromRotationMatrix(item.matrix)
+                    if (item._axis) {
+                        that.rotateObject3D(item, item._axis, PI / 360)
+                    }
                 })
+                that.rotateObject3D(earthParticles, new THREE.Vector3(0, 1, 0), PI / 320)
+                that.rotateObject3D(cloud, new THREE.Vector3(0, 1, 0), PI / 360)
                 renderer.render(scene, camera)
+            },
+            // 3D物体绕某个轴旋转一定度数
+            rotateObject3D (obj3D, axis, deg) {
+                const rotWorldMatrix = new THREE.Matrix4()
+                rotWorldMatrix.makeRotationAxis(axis.normalize(), deg)
+                rotWorldMatrix.multiply(obj3D.matrix)
+                obj3D.matrix = rotWorldMatrix
+                obj3D.rotation.setFromRotationMatrix(obj3D.matrix)
+            }
+        },
+        beforeDestroy () {
+            if (aniRequestId) {
+                cancelAnimationFrame(aniRequestId)
             }
         }
     }
