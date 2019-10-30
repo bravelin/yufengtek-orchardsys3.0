@@ -1,11 +1,9 @@
 // localstorage标签定义
-const prefixTag = 'tea-sys-client'
+const prefixTag = 'orchard-sys'
 export default {
-    userToken: `${prefixTag}-token`,
-    userId: `${prefixTag}-userid`,
-    userRole: `${prefixTag}-userrole`,
+    userType: `${prefixTag}-usertype`,
+    orchardId: `${prefixTag}-orchardid`,
     userName: `${prefixTag}-username`,
     password: `${prefixTag}-password`,
-    loginRemember: `${prefixTag}-remember`,
-    version: `${prefixTag}-version`
+    loginRemember: `${prefixTag}-remember`
 }

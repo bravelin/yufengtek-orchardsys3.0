@@ -12,7 +12,6 @@
         name: 'Login',
         components: { Dialog, Sphere },
         created () {
-            this.$store.commit(types.SWITCH_LOADING, false)
         }
     }
 </script>

@@ -42,34 +42,29 @@ export default {
     },
     // 更新用户信息
     [types.UPDATE_USER_INFO] (state, payload) {
-        state.userToken = payload.userToken
-        state.userId = payload.userId
+        state.userType = payload.userType
+        state.orchardId = payload.orchardId
         state.userName = payload.userName
-        state.userRole = payload.userRole
         state.loginRemember = payload.loginRemember
         ls.setItem(tags.loginRemember, payload.loginRemember ? '1' : '0')
         if (payload.loginRemember) { // 记住用户信息
-            ls.setItem(tags.userToken, state.userToken)
-            ls.setItem(tags.userId, state.userId)
+            ls.setItem(tags.userType, state.userType)
+            ls.setItem(tags.orchardId, state.orchardId)
             ls.setItem(tags.userName, state.userName)
-            ls.setItem(tags.userRole, state.userRole)
             ls.setItem(tags.password, payload.password)
         } else {
-            ls.removeItem(tags.userToken)
-            ls.removeItem(tags.userId)
+            ls.removeItem(tags.userType)
+            ls.removeItem(tags.orchardId)
             ls.removeItem(tags.userName)
-            ls.removeItem(tags.userRole)
             ls.removeItem(tags.password)
         }
     },
     // 清除用户信息
     [types.CLEAR_USER_INFO] (state) {
-        state.userToken = ''
-        state.userId = ''
-        state.userRole = ''
-        ls.removeItem(tags.userToken)
-        ls.removeItem(tags.userId)
-        ls.removeItem(tags.userRole)
+        state.orchardId = ''
+        state.userType = ''
+        ls.removeItem(tags.orchardId)
+        ls.removeItem(tags.userType)
         if (ls.getItem(tags.loginRemember) == '0') {
             state.userName = ''
             ls.removeItem(tags.userName)
@@ -80,5 +75,9 @@ export default {
     [types.SWITCH_MESSAGE_TIP] (state, payload) {
         state.showMessageTip = payload.show
         state.tip = payload.tip
+    },
+    // 更改登录状态
+    [types.SWITCH_LOGIN_STATE] (state, tag) {
+        state.isLogin = tag
     }
 }

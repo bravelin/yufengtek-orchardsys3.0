@@ -2,18 +2,20 @@
     <div id="app" :style="{ height: winHeight + 'px' }">
         <router-view :style="{ height: pageHeight + 'px' }"/>
         <Loading v-show="loading"></Loading>
+        <Message></Message>
     </div>
 </template>
 
 <script>
     import Loading from '@/components/Loading'
+    import Message from '@/components/Message'
     import { mapState } from 'vuex'
     import types from '@/store/constants/types'
     import { getPageParams } from '@/lib/util'
 
     export default {
         name: 'app',
-        components: { Loading },
+        components: { Loading, Message },
         computed: {
             ...mapState(['loading', 'winHeight']),
             pageHeight () {

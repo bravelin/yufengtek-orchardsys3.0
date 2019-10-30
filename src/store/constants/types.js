@@ -5,7 +5,8 @@ const types = [
     'SET_CURR_ROUTER', // 设置当前路由
     'UPDATE_USER_INFO',
     'CLEAR_USER_INFO',
-    'SWITCH_MESSAGE_TIP'
+    'SWITCH_MESSAGE_TIP',
+    'SWITCH_LOGIN_STATE' // 更改登录状态
 ]
 
 const typesObj = {}

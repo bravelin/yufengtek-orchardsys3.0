@@ -3,7 +3,9 @@
 </template>
 <script>
     import * as THREE from 'three'
+    import types from '@/store/constants/types'
 
+    const loginState = `$store.state.isLogin`
     const PI = Math.PI
     const BLINT_SPEED = 0.05
     const RADIUS = 100
@@ -29,9 +31,18 @@
     const starGroups = [] // 沿着轨道的白色星星
     const cameraNormalZ = 480
     const cameraNormalX = -140
-    let isStartToSwitchHomePage = false
+    let aniStatus = 0 // 控制动画的一个变量
+    let earthRotateSpeed = 0.006
+    let cloudRotateSpeed = 0.004
     export default {
         name: 'LoginSphere',
+        watch: {
+            [loginState] (newVal) {
+                if (newVal) {
+                    aniStatus = 1
+                }
+            }
+        },
         mounted () {
             const that = this
             that.$nextTick(() => {
@@ -59,6 +70,7 @@
                     that.createCloudGrid()
                     renderer.render(scene, camera)
                     that.animate()
+                    that.$store.commit(types.SWITCH_LOADING, false)
                 }
             },
             createScene () {
@@ -67,8 +79,8 @@
                 const winHeight = document.documentElement.clientHeight || window.innerHeight
                 scene = new THREE.Scene()
                 camera = new THREE.PerspectiveCamera(45, winWidth / winHeight, 0.1, 10000)
-                camera.position.z = 900
-                camera.position.x = -380
+                camera.position.z = 700
+                camera.position.x = -240
                 renderer = new THREE.WebGLRenderer({ antialias: true })
                 renderer.setSize(winWidth, winHeight)
                 renderer.autoClearColor = new THREE.Color(1, 0, 0, 0)
@@ -321,25 +333,32 @@
             },
             animate () {
                 const that = this
-                if (!isStartToSwitchHomePage) {
+                if (aniStatus == 0) {
                     if (camera.position.z >= cameraNormalZ) {
                         camera.position.z -= 1.4
                     }
                     if (camera.position.x <= cameraNormalX) {
                         camera.position.x += 0.9
                     }
-                } else {
-                    console.log('switch to home page...')
+                } else if (aniStatus == 1) {
+                    if (camera.position.x < 0) {
+                        camera.position.x += 1.5
+                    } else {
+                        aniStatus = 2
+                    }
+                } else if (aniStatus == 2) {
+                    camera.position.z -= 1
+                    if (camera.position.z < 320) { // 执行切换
+                        that.$router.push(that.$store.state.orchardId ? 'monitor' : 'home')
+                    }
                 }
                 aniRequestId = requestAnimationFrame(that.animate)
                 starGroups.forEach(({ objs, axis, speed }) => {
                     that.rotateObject3D(objs, axis, (PI / 180) * speed)
                 })
-                tracks.forEach(obj => {
-                    obj.rotation.z += 0.001
-                })
-                earthParticles.rotation.y += 0.006
-                cloud.rotation.y += 0.004
+                tracks.forEach(obj => { obj.rotation.z += 0.001 })
+                earthParticles.rotation.y += earthRotateSpeed
+                cloud.rotation.y += cloudRotateSpeed
                 renderer.render(scene, camera)
             },
             // 3D物体绕某个轴旋转一定度数

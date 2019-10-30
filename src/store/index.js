@@ -26,10 +26,10 @@ export default new Vuex.Store({
         miniScreen: false, // 屏幕宽度小于 1200 -- 匹配1024
 
         // 与当前登录用户的相关状态
-        userToken: ls.getItem(tags.userToken) || '', // 用户token
-        userId: ls.getItem(tags.userId) || '', // 用户ID
-        userName: ls.getItem(tags.userName) || '', // 登录名
-        userRole: ls.getItem(tags.userRole) || '0' // 角色
+        isLogin: false,
+        userName: ls.getItem(tags.userName) || '', // 用户名
+        userType: ls.getItem(tags.userType) || '', // 用户类型
+        orchardId: ls.getItem(tags.orchardId) || '' // 果园ID
     },
     mutations,
     actions,

@@ -18,9 +18,17 @@
         padding: 15px;
         border-radius: 4px;
         width: 500px;
-        left: 3%;
+        left: 5%;
         background-clip: content-box;
         z-index: 2;
+        opacity: 0;
+        transform: translateY(-150px);
+        transition: all 0.75s ease-out;
+        will-change: opacity, transform;
+        &.active{
+            transform: translateY(0px);
+            opacity: 1;
+        }
         &::before{
             content: "";
             position: absolute;
@@ -125,8 +133,8 @@
             position: absolute;
             display: block;
             right: 0;
-            bottom: 3px;
-            background: #303c6e;
+            bottom: 4px;
+            background: transparent;
             width: 100px;
             height: 42px;
             border: none;

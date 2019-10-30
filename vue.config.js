@@ -6,6 +6,12 @@ module.exports = {
         port: 9001,
         https: false,
         hotOnly: false,
-        disableHostCheck: true
+        disableHostCheck: true,
+        proxy: {
+            '/orchard': {
+                target: 'http://trace.yufengtek.com',
+                changeOrigin: true
+            }
+        }
     }
 }
