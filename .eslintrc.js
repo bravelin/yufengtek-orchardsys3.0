@@ -44,7 +44,9 @@ module.exports = {
         EZUIKit: true,
         removepano: true,
         embedpano: true,
-        L: true
+        L: true,
+        TweenMax: true,
+        Linear: true
     },
     parserOptions: {
         parser: 'babel-eslint'

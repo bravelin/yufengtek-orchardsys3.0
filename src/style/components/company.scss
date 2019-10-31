@@ -1,0 +1,36 @@
+.company-logo-wrap{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    height: 70px;
+    width: 214px;
+    letter-spacing: 3px;
+    font-size: 22px;
+    font-weight: bold;
+    left: calc((100% - 1366px) / 4);
+    margin-left: -100px;
+    bottom: -5px;
+    &::before{
+        content: "";
+        display: block;
+        width: 38px;
+        height: 26px;
+        background-image: url('../assets/logo.png');
+        margin: -2px 8px 0 -6px;
+    }
+    >svg{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    >span{
+        margin-top: -9px;
+        background-image: linear-gradient(to bottom, #cbebfd 0%, #86e8f6 50%, #20e4eb 100%);
+        background-clip: text;
+        color: transparent;
+    }
+}

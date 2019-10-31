@@ -16,3 +16,14 @@
     padding: 0 0 10px;
     background-size: 100% 100%;
 }
+
+.app-top-wrap{
+    position: relative;
+    display: flex;
+    height: 80px;
+    box-sizing: border-box;
+    align-items: center;
+    padding-left: 50px;
+    justify-content: space-around;
+}
+  

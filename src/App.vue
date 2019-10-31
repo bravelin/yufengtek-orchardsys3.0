@@ -1,5 +1,10 @@
 <template>
     <div id="app" :style="{ height: winHeight + 'px' }">
+        <div class="app-top-wrap">
+            <Company></Company>
+            <NavMenu></NavMenu>
+            <LogoutButton></LogoutButton>
+        </div>
         <router-view :style="{ height: pageHeight + 'px' }"/>
         <Loading v-show="loading"></Loading>
         <Message></Message>
@@ -9,18 +14,21 @@
 <script>
     import Loading from '@/components/Loading'
     import Message from '@/components/Message'
+    import Company from '@/components/Company'
+    import NavMenu from '@/components/NavMenu'
+    import LogoutButton from '@/components/LogoutButton'
     import { mapState } from 'vuex'
     import types from '@/store/constants/types'
     import { getPageParams } from '@/lib/util'
 
     export default {
         name: 'app',
-        components: { Loading, Message },
+        components: { Loading, Message, Company, LogoutButton, NavMenu },
         computed: {
             ...mapState(['loading', 'winHeight']),
             pageHeight () {
                 const state = this.$store.state
-                let h = state.winHeight - 133
+                let h = state.winHeight - 80
                 if (state.winWidth <= 1200) {
                     h += 29
                 } else if (state.winWidth <= 1400) {

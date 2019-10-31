@@ -1,6 +1,12 @@
 <template>
-    <div class="page"><h1>Home Page....</h1></div>
+    <div class="page"></div>
 </template>
 <script>
-    export default {}
+    import types from '@/store/constants/types'
+    export default {
+        created () {
+            const that = this
+            that.$store.commit(types.SWITCH_LOADING, false)
+        }
+    }
 </script>

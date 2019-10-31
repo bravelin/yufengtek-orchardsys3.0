@@ -1,0 +1,58 @@
+.navmenu-wrap{
+    position: relative;
+    display: flex;
+    width: 1366px;
+    height: 80px;
+    >svg{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+    >ul{
+        display: flex;
+        flex: 0.3351;
+        padding-top: 32px;
+        font-size: 16px;
+        letter-spacing: 2px;
+        >li{
+            position: relative;
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.4s ease-out;
+            will-change: color;
+            &::after{
+                content: "";
+                display: none;
+                position: absolute;
+                left: 50%;
+                bottom: 15px;
+                width: 30px;
+                height: 9px;
+                margin-left: -15px;
+                background-image: url('../assets/shadow.png');
+            }
+            &.active{
+                color: #1ce4eb;
+                &::after{
+                    display: block;
+                }
+            }
+            &:hover{
+                color: #1ce4eb;
+            }
+        }
+    }
+    >h1{
+        flex: 0.3298;
+        line-height: 70px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 25px;
+        letter-spacing: 4px;
+    }
+}
